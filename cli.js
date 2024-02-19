@@ -1,48 +1,112 @@
 #!/usr/bin/env node
-'use strict';
-var pkg = require('./package.json');
-var movieTrailer = require('./index');
-var movie = process.argv[2];
+'use strict'
+const meow = require( 'meow' )
+const movieTrailer = require( './index' )
 
-var cb = function (err, url) {
-	if (err) {
-		console.error(err);
-		process.exit(1);
+const cli = meow(
+	`
+	Usage
+	  $ movie-trailer movie [year] [multi]
+
+	Options
+	  --api_key   -k   (optional) Your own TMDB API key: http://developers.themoviedb.org
+	  --id        -i   Return just the Youtube video ID.
+	  --language, -l   Specify a language code (eg: 'de_DE').
+	  --multi,    -m   Returns an array of URLs instead of a single URL.
+	  --tmdb_id   -t   Specify an explicit TMDB ID.
+	  --year,     -y   Specify a release year to search.
+
+	Example
+	  $ movie-trailer 'Oceans Eleven' --year 1960
+	  // => http://path/to/trailer
+`,
+	{
+		flags: {
+			// eslint-disable-next-line camelcase
+			api_key: {
+				type: 'string',
+				alias: 'k'
+			},
+			id: {
+				alias: 'i',
+				type: 'boolean'
+			},
+			language: {
+				type: 'string',
+				alias: 'l'
+			},
+			multi: {
+				alias: 'm',
+				type: 'boolean'
+			},
+			// eslint-disable-next-line camelcase
+			tmdb_id: {
+				type: 'string',
+				alias: 't'
+			},
+			year: {
+				type: 'string',
+				alias: 'y'
+			}
+		}
 	}
-	console.log(url);
-};
+)
 
-var help = function () {
-	console.log(pkg.description);
-	console.log('');
-	console.log('Usage');
-	console.log('  $ movie-trailer movie [year]');
-	console.log('');
-	console.log('Example');
-	console.log('  $ movie-trailer \'Oceans Eleven\' 1960');
-	console.log('  http://path/to/trailer');
-};
-
-if (process.argv.indexOf('-h') !== -1 || process.argv.indexOf('--help') !== -1) {
-	help();
-	return;
+const options = {
+	id: false,
+	language: null,
+	multi: false,
+	year: null
 }
 
-if (process.argv.indexOf('-v') !== -1 || process.argv.indexOf('--version') !== -1) {
-	console.log(pkg.version);
-	return;
+if ( cli.flags.i ) {
+
+	options.id = Boolean( cli.flags.i )
+
 }
 
-var multi = false;
-if (process.argv.indexOf('-m') !== -1 || process.argv.indexOf('--multi') !== -1) {
-	multi = true;
+if ( cli.flags.k ) {
+
+	options.apiKey = cli.flags.k
+
 }
 
-var argc = process.argv.length;
-if (argc === 3){
-	movieTrailer(movie, null, multi, cb);
-} else if (!isNaN(parseFloat(process.argv[3])) && isFinite(process.argv[3])){
-	movieTrailer(movie, process.argv[3], multi, cb);
-} else {
-	help();
+if ( cli.flags.l ) {
+
+	options.language = cli.flags.l
+
 }
+
+if ( cli.flags.m ) {
+
+	options.multi = Boolean( cli.flags.m )
+
+}
+
+if ( cli.flags.t ) {
+
+	options.tmdbId = cli.flags.t
+
+}
+
+if ( cli.flags.y ) {
+
+	options.year = cli.flags.y
+
+}
+
+if ( !cli.input[0] && !options.tmdbId ) {
+
+	cli.showHelp()
+
+}
+
+movieTrailer( cli.input[0], options ).then( result => {
+
+	if ( result ) {
+
+		console.log( result )
+
+	}
+
+} )

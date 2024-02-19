@@ -1,25 +1,40 @@
 {
   "name": "movie-trailer",
-  "version": "1.0.4",
-  "description": "Get movie trailer url(s): Oceans Eleven ➔ http://path/to/trailer",
+  "version": "3.1.0",
+  "description": "Get movie & TV trailer url(s): Oceans Eleven ➔ http://path/to/trailer",
   "license": "MIT",
+  "main": "index.js",
+  "browser": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/lacymorrow/movie-trailer"
-  },
-  "bin": {
-    "movie-trailer": "cli.js"
   },
   "author": {
     "name": "Lacy Morrow",
     "email": "me@lacymorrow.com",
     "url": "http://lacymorrow.com"
   },
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://patreon.com/lacymorrow"
+    },
+    {
+      "type": "individual",
+      "url": "http://lacymorrow.com/donate"
+    },
+    "https://www.buymeacoffee.com/lm"
+  ],
+  "bin": {
+    "movie-trailer": "cli.js"
+  },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=7.6.0"
   },
   "scripts": {
-    "test": "mocha"
+    "lint": "xo --fix",
+    "test": "ava --verbose",
+    "release": "np"
   },
   "files": [
     "cli.js",
@@ -35,14 +50,64 @@
     "uri",
     "path"
   ],
-  "devDependencies": {
-    "mocha": "5.0.0"
-  },
   "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/lacymorrow/movie-trailer/issues"
   },
   "homepage": "https://github.com/lacymorrow/movie-trailer",
-  "_id": "movie-trailer@1.0.0",
-  "_from": "movie-trailer@"
+  "devDependencies": {
+    "ava": "^5.1.0"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
+    "meow": "^4.0.0",
+    "np": "^7.6.2",
+    "xo": "^0.56.0"
+  },
+  "np": {
+    "publish": true,
+    "releaseDraft": true
+  },
+  "xo": {
+    "envs": [
+      "node",
+      "browser"
+    ],
+    "rules": {
+      "array-bracket-spacing": [
+        "error",
+        "always"
+      ],
+      "padded-blocks": [
+        "error",
+        {
+          "blocks": "always",
+          "switches": "always",
+          "classes": "always"
+        }
+      ],
+      "padding-line-between-statements": [
+        "error",
+        {
+          "blankLine": "always",
+          "prev": "multiline-block-like",
+          "next": "*"
+        },
+        {
+          "blankLine": "always",
+          "prev": "*",
+          "next": "return"
+        }
+      ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "space-in-parens": [
+        "error",
+        "always"
+      ]
+    },
+    "semicolon": false
+  }
 }
